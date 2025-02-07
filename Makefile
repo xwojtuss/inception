@@ -14,7 +14,7 @@ nginx_fclean: nginx_clean
 
 mariadb:
 	docker build -t mariadb srcs/requirements/mariadb/;
-	docker run -it --rm -d -p 3306:3306 --name mariadb_cont mariadb;
+	docker run --mount type=volume,src=database,dst=/var/lib/mysql -d --rm -p 3306:3306 --name mariadb_cont mariadb;
 
 mariadb_stop:
 	docker stop mariadb_cont;
