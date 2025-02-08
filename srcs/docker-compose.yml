@@ -1,0 +1,46 @@
+services:
+  server:
+    build:
+      context: ./requirements/nginx
+    ports:
+      - "80:80"
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - server_web
+    restart: always
+  
+  db:
+    build:
+      context: ./requirements/mariadb
+    volumes:
+      - databases:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - db_web
+    restart: always
+
+  web:
+    build:
+      context: ./requirements/wordpress
+    depends_on:
+      - db
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - server_web
+      - db_web
+    restart: always
+
+volumes:
+  databases:
+    driver: local
+  wordpress:
+    driver: local
+
+networks:
+  db_web:
+    driver: bridge
+  server_web:
+    driver: bridge

@@ -1,15 +1,14 @@
 FROM	alpine:3.21.2
 
-RUN	apk update && apk add php82 fcgi php82-cgi
-RUN	mkdir -p /usr/share/webapps/
-RUN	cd /usr/share/webapps/ && wget https://wordpress.org/latest.tar.gz
-RUN	tar -xzvf latest.tar.gz && rm latest.tar.gz
-RUN	chwon -R nginx /usr/share/webapps/
-RUN	ln -s /usr/share/webapps/wordpress/ /var/www/localhost/htdocs/wordpress
+RUN		apk update && apk add php82 fcgi php82-cgi php82-fpm
 
-COPY	conf/nginx.conf /etc/nginx/
-COPY	conf/index.html /var/www/wkornato/
+WORKDIR	/usr/share/webapps/
 
-EXPOSE	80
+COPY	tools/latest.tar.gz .
+RUN		tar -xzvf latest.tar.gz && rm latest.tar.gz
+RUN		mkdir -p /var/www/localhost/htdocs/wordpress
+RUN		ln -s /usr/share/webapps/wordpress /var/www/localhost/htdocs/wordpress
 
-CMD	["nginx", "-g", "daemon off;"]
+EXPOSE	9000
+
+CMD		["php-fpm82", "-F"]
