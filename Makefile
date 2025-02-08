@@ -1,6 +1,8 @@
 
 
-all: nginx
+all:
+	docker build -t nginx srcs/requirements/nginx/;
+	docker build -t mariadb srcs/requirements/mariadb/;
 
 nginx:
 	docker build -t nginx srcs/requirements/nginx/;
