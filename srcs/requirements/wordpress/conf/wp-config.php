@@ -57,6 +57,10 @@ define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
 define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
 define( 'NONCE_SALT',       'put your unique phrase here' );
 
+define('FORCE_SSL_ADMIN', true);
+define('WP_HOME', 'https://wkornato.42.fr');
+define('WP_SITEURL', 'https://wkornato.42.fr');
+
 /**#@-*/
 
 /**
