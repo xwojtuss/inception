@@ -3,7 +3,7 @@ services:
     build:
       context: ./requirements/nginx
     ports:
-      - "80:80"
+      - "443:443"
     volumes:
       - wordpress:/var/www/html
     networks:
@@ -17,7 +17,7 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
-      MYSQL_PASSWORD: 
+      MYSQL_PASSWORD: wordpresspassword
     volumes:
       - ./requirements/mariadb/tools/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./requirements/mariadb/conf/my.cnf:/etc/my.cnf
