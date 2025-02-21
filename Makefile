@@ -28,4 +28,7 @@ fclean:
 
 re: fclean all
 
+free:
+	docker system prune --all --volumes
+
 .PHONY: all clean fclean re
