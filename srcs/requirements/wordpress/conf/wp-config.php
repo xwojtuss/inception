@@ -37,6 +37,8 @@ define( 'DB_CHARSET', 'utf8' );
 /** The database collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
 
+define( 'DB_SOCKET', '' ); // Force TCP/IP instead of socket connection
+
 /**#@+
  * Authentication unique keys and salts.
  *
@@ -48,18 +50,19 @@ define( 'DB_COLLATE', '' );
  *
  * @since 2.6.0
  */
-define( 'AUTH_KEY',         'put your unique phrase here' );
-define( 'SECURE_AUTH_KEY',  'put your unique phrase here' );
-define( 'LOGGED_IN_KEY',    'put your unique phrase here' );
-define( 'NONCE_KEY',        'put your unique phrase here' );
-define( 'AUTH_SALT',        'put your unique phrase here' );
-define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
-define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
-define( 'NONCE_SALT',       'put your unique phrase here' );
+
+define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL);
 
 define('FORCE_SSL_ADMIN', true);
-define('WP_HOME', 'https://wkornato.42.fr');
-define('WP_SITEURL', 'https://wkornato.42.fr');
+define('WP_HOME', 'wkornato.42.fr');
+define('WP_SITEURL', 'wkornato.42.fr');
+
+define('PHPMAILER_INIT_SMTP', false);
+
+define('DB_SSL_KEY', '/etc/ssl/private/mariadb-server-key.pem');
+define('DB_SSL_CERT', '/etc/ssl/certs/mariadb-server-cert.pem');
+define('DB_SSL_CA', '/etc/ssl/certs/ca-cert.pem');
+
 
 /**#@-*/
 
@@ -89,7 +92,9 @@ $table_prefix = 'wp_';
  *
  * @link https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/
  */
-define( 'WP_DEBUG', false );
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );
+define( 'WP_DEBUG_DISPLAY', false );
 
 /* Add any custom values between this line and the "stop editing" line. */
 

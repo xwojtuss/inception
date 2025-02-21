@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sleep 5
+sleep 7
 
 #wp-cli config create --dbname=wordpress --dbhost=db:3306 --dbuser=wordpress --dbpass=wordpresspassword --locale=en_DB
 
