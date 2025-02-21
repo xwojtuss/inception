@@ -1,7 +1,7 @@
 FROM	alpine:3.21.2
 
-RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php-mbstring php-curl curl
-
+RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php-mbstring php-curl curl php82-iconv php82-mysqli
+RUN echo "date.timezone = UTC" >> /etc/php82/php.ini
 RUN ln -s /usr/bin/php82 /usr/bin/php
 
 WORKDIR /var/www/html
@@ -9,8 +9,11 @@ WORKDIR /var/www/html
 COPY conf/wp-config.php /var/www/html/wp-config.php
 COPY conf/php-fpm.conf /etc/php82/php-fpm.conf
 COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
-
+COPY tools/ssl/certs/ /etc/ssl/certs/
+COPY tools/ssl/private/ /etc/ssl/private/
 COPY tools/entrypoint.sh /
+
+RUN chmod 600 /etc/ssl/private/mariadb-server-key.pem
 RUN chmod +x /entrypoint.sh
 #COPY tools/latest.tar.gz .
 #RUN tar -xzvf latest.tar.gz && rm latest.tar.gz
