@@ -1,7 +1,6 @@
 FROM	alpine:3.21.2
 
 RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php-mbstring php-curl curl php82-iconv php82-mysqli
-
 RUN ln -s /usr/bin/php82 /usr/bin/php
 
 WORKDIR /var/www/html
@@ -17,6 +16,8 @@ COPY tools/ssl/private/mariadb-client-key.pem /etc/ssl/private/
 RUN chmod 600 /etc/ssl/certs/mariadb-client-cert.pem /etc/ssl/private/mariadb-client-key.pem
 
 COPY tools/entrypoint.sh /
+
+RUN chmod 600 /etc/ssl/private/mariadb-server-key.pem
 RUN chmod +x /entrypoint.sh
 #COPY tools/latest.tar.gz .
 #RUN tar -xzvf latest.tar.gz && rm latest.tar.gz

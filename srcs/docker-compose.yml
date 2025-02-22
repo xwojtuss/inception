@@ -2,6 +2,8 @@ services:
   server:
     build:
       context: ./requirements/nginx
+    env_file:
+      - .env
     ports:
       - "443:443"
     volumes:
@@ -13,15 +15,9 @@ services:
   db:
     build:
       context: ./requirements/mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpresspassword
+    env_file:
+      - .env
     volumes:
-      - ./requirements/mariadb/tools/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./requirements/mariadb/conf/my.cnf:/etc/my.cnf
-      - ./requirements/mariadb/conf/mariadb-server.cnf:/etc/my.cnf.d/mariadb-server.cnf
       - databases:/var/lib/mysql
     ports:
       - "3306:3306"
@@ -32,11 +28,8 @@ services:
   web:
     build:
       context: ./requirements/wordpress
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpresspassword
+    env_file:
+      - .env
     depends_on:
       - db
     volumes:
