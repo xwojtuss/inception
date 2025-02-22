@@ -16,8 +16,6 @@ COPY tools/ssl/private/mariadb-client-key.pem /etc/ssl/private/
 RUN chmod 600 /etc/ssl/certs/mariadb-client-cert.pem /etc/ssl/private/mariadb-client-key.pem
 
 COPY tools/entrypoint.sh /
-
-RUN chmod 600 /etc/ssl/private/mariadb-server-key.pem
 RUN chmod +x /entrypoint.sh
 #COPY tools/latest.tar.gz .
 #RUN tar -xzvf latest.tar.gz && rm latest.tar.gz
