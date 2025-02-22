@@ -1,2 +1,4 @@
-srcs/requirements/mariadb/tools/ssl
-srcs/requirements/wordpress/tools/ssl
+srcs/requirements/wordpress/tools/ssl/
+srcs/requirements/mariadb/tools/ssl/
+secrets/
+srcs/.env

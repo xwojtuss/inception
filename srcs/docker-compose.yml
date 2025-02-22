@@ -2,6 +2,14 @@ services:
   server:
     build:
       context: ./requirements/nginx
+    env_file:
+      - .env
+    secrets:
+      - db_password
+      - db_root_password
+      - db_name
+      - db_user
+      - db_admin
     ports:
       - "443:443"
     volumes:
@@ -15,6 +23,12 @@ services:
       context: ./requirements/mariadb
     env_file:
       - .env
+    secrets:
+      - db_password
+      - db_root_password
+      - db_name
+      - db_user
+      - db_admin
     volumes:
       - databases:/var/lib/mysql
     ports:
@@ -28,6 +42,12 @@ services:
       context: ./requirements/wordpress
     env_file:
       - .env
+    secrets:
+      - db_password
+      - db_root_password
+      - db_name
+      - db_user
+      - db_admin
     depends_on:
       - db
     volumes:
@@ -50,3 +70,15 @@ networks:
     driver: bridge
   server_web:
     driver: bridge
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_name:
+    file: ../secrets/db_name.txt
+  db_user:
+    file: ../secrets/db_user.txt
+  db_admin:
+    file: ../secrets/db_admin.txt

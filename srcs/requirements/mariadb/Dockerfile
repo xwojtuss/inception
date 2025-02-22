@@ -1,7 +1,6 @@
 FROM	alpine:3.21.2
 
 COPY tools/entrypoint.sh /
-COPY tools/init.sql /docker-entrypoint-initdb.d/init.sql
 COPY conf/my.cnf /etc/my.cnf
 COPY conf/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf
 RUN chmod +x /entrypoint.sh
