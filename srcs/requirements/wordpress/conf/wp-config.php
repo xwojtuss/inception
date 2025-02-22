@@ -61,6 +61,11 @@ define('FORCE_SSL_ADMIN', true);
 define('WP_HOME', 'https://wkornato.42.fr');
 define('WP_SITEURL', 'https://wkornato.42.fr');
 
+define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL);
+define('MYSQL_SSL_CA', '/etc/ssl/certs/ca-cert.pem');
+define('MYSQL_SSL_CERT', '/etc/ssl/certs/mariadb-client-cert.pem');
+define('MYSQL_SSL_KEY', '/etc/ssl/private/mariadb-client-key.pem');
+
 /**#@-*/
 
 /**
