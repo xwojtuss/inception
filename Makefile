@@ -24,6 +24,7 @@ create-secrets:
 		echo "DB_ADMIN_FILE=/run/secrets/db_admin" >> srcs/.env; \
 		echo "WORDPRESS_DB_HOST=db:3306" >> srcs/.env; \
 		echo "CREDENTIALS_FILE=/run/secrets/credentials" >> srcs/.env; \
+		echo "FTP_CREDENTIALS_FILE=/run/secrets/ftp_credentials" >> srcs/.env; \
 	fi
 
 	@if [ ! -f secrets/db_user.txt ]; then \
@@ -77,6 +78,16 @@ create-secrets:
 		printf "Enter the password: "; \
 		read CREDENTIALS_PASSWORD; \
 		echo $$CREDENTIALS_PASSWORD >> secrets/credentials.txt; \
+	fi
+
+	@if [ ! -f secrets/ftp_credentials.txt ]; then \
+		echo "---FTP credentials---"; \
+		printf "Enter the username: "; \
+		read FTP_CREDENTIALS_USERNAME; \
+		echo $$FTP_CREDENTIALS_USERNAME > secrets/ftp_credentials.txt; \
+		printf "Enter the password: "; \
+		read FTP_CREDENTIALS_PASSWORD; \
+		echo $$FTP_CREDENTIALS_PASSWORD >> secrets/ftp_credentials.txt; \
 	fi
 
 	@if [ ! -f secrets/auth.txt ]; then \

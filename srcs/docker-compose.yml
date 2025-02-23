@@ -75,6 +75,20 @@ services:
       - redis_web
     restart: always
 
+  vsftpd:
+    build:
+      context: ./requirements/vsftpd
+    env_file:
+      - .env
+    secrets:
+      - ftp_credentials
+    ports:
+      - "21:21"
+      - "10000-10100:10000-10100"
+    volumes:
+      - /home/wkornato/data/wordpress:/home/vsftpd
+    restart: always
+
 networks:
   db_web:
     driver: bridge
@@ -114,3 +128,5 @@ secrets:
     file: ../secrets/auth.txt
   redis_pass:
     file: ../secrets/redis_pass.txt
+  ftp_credentials:
+    file: ../secrets/ftp_credentials.txt
