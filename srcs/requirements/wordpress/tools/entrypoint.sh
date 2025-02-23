@@ -13,8 +13,10 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 	wp-cli core download --allow-root
 	cp /wp-config.php.template /var/www/html/
 	export AUTH_KEYS=$(cat /run/secrets/auth)
-	envsubst '$AUTH_KEYS' < /var/www/html/wp-config.php.template > /var/www/html/wp-config.php
+	export REDIS_PASS=$(cat /run/secrets/redis_pass)
+	envsubst '$AUTH_KEYS $REDIS_PASS' < /var/www/html/wp-config.php.template > /var/www/html/wp-config.php
 	unset AUTH_KEYS
+	unset REDIS_PASS
 	sleep 5
 	wp-cli core install --allow-root --url=$DOMAIN_NAME --title=Inception --admin_user=$(sed -n '1p' $CREDENTIALS_FILE) --admin_password=$(sed -n '3p' $CREDENTIALS_FILE) --admin_email=$(sed -n '2p' $CREDENTIALS_FILE)
 	chown -R nobody:nobody /var/www/html/wp-content
