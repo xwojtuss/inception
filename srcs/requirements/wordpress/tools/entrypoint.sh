@@ -11,10 +11,14 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 	chmod +x wp-cli.phar
 	mv wp-cli.phar /usr/local/bin/wp-cli
 	wp-cli core download --allow-root
-	cp /wp-config.php /var/www/html/
+	cp /wp-config.php.template /var/www/html/
+	export AUTH_KEYS=$(cat /run/secrets/auth)
+	envsubst '$AUTH_KEYS' < /var/www/html/wp-config.php.template > /var/www/html/wp-config.php
+	unset AUTH_KEYS
 	sleep 5
 	wp-cli core install --allow-root --url=$DOMAIN_NAME --title=Inception --admin_user=$(sed -n '1p' $CREDENTIALS_FILE) --admin_password=$(sed -n '3p' $CREDENTIALS_FILE) --admin_email=$(sed -n '2p' $CREDENTIALS_FILE)
+	wp-cli plugin install --allow-root redis-cache --activate
+	cp /var/www/html/wp-content/plugins/redis-cache/includes/object-cache.php /var/www/html/wp-content/
 fi
 
 exec php-fpm82 -F
-exit 0

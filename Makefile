@@ -79,6 +79,17 @@ create-secrets:
 		echo $$CREDENTIALS_PASSWORD >> secrets/credentials.txt; \
 	fi
 
+	@if [ ! -f secrets/auth.txt ]; then \
+		curl https://api.wordpress.org/secret-key/1.1/salt/ > secrets/auth.txt; \
+	fi
+
+	@if [ ! -f secrets/redis_pass.txt ]; then \
+		echo "---Redis---"; \
+		printf "Enter the redis password: "; \
+		read REDIS_PASS; \
+		printf $$REDIS_PASS > secrets/redis_pass.txt; \
+	fi
+	
 generate-certs:
 	@if [ ! -f secrets/nginx-selfsigned.key ] || [ ! -f secrets/nginx-selfsigned.crt ]; then \
 		echo "Generating Nginx self-signed certificate..."; \

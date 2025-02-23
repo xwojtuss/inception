@@ -50,6 +50,8 @@ services:
       - mariadb_client_key
       - ca_cert
       - credentials
+      - auth
+      - redis_pass
     depends_on:
       - mariadb
     volumes:
@@ -59,12 +61,26 @@ services:
     networks:
       - server_web
       - db_web
+      - redis_web
+    restart: always
+
+  redis:
+    build:
+      context: ./requirements/redis
+    secrets:
+      - redis_pass
+    ports:
+      - "6379:6379"
+    networks:
+      - redis_web
     restart: always
 
 networks:
   db_web:
     driver: bridge
   server_web:
+    driver: bridge
+  redis_web:
     driver: bridge
 
 secrets:
@@ -94,3 +110,7 @@ secrets:
     file: ../secrets/mariadb-client-key.pem
   credentials:
     file: ../secrets/credentials.txt
+  auth:
+    file: ../secrets/auth.txt
+  redis_pass:
+    file: ../secrets/redis_pass.txt

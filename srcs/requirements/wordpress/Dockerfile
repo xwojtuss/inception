@@ -1,11 +1,11 @@
 FROM	alpine:3.21.2
 
-RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php-mbstring php-curl curl php82-iconv php82-mysqli
+RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php-mbstring php-curl curl php82-iconv php82-mysqli gettext
 RUN ln -s /usr/bin/php82 /usr/bin/php
 
 WORKDIR /var/www/html
 
-COPY conf/wp-config.php /wp-config.php
+COPY conf/wp-config.php.template /wp-config.php.template
 COPY conf/php-fpm.conf /etc/php82/php-fpm.conf
 COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
 

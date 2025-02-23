@@ -49,14 +49,7 @@ define( 'DB_COLLATE', '' );
  *
  * @since 2.6.0
  */
-define( 'AUTH_KEY',         'put your unique phrase here' );
-define( 'SECURE_AUTH_KEY',  'put your unique phrase here' );
-define( 'LOGGED_IN_KEY',    'put your unique phrase here' );
-define( 'NONCE_KEY',        'put your unique phrase here' );
-define( 'AUTH_SALT',        'put your unique phrase here' );
-define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
-define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
-define( 'NONCE_SALT',       'put your unique phrase here' );
+$AUTH_KEYS
 
 define('FORCE_SSL_ADMIN', true);
 define('WP_HOME', 'https://wkornato.42.fr');
@@ -66,6 +59,14 @@ define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL);
 define('MYSQL_SSL_CA', '/etc/ssl/certs/ca-cert.pem');
 define('MYSQL_SSL_CERT', '/etc/ssl/certs/mariadb-client-cert.pem');
 define('MYSQL_SSL_KEY', '/etc/ssl/private/mariadb-client-key.pem');
+
+define('WP_REDIS_HOST', 'redis');
+define('WP_REDIS_PORT', 6379);
+define('WP_REDIS_PASSWORD', 'test123');
+define('WP_REDIS_TIMEOUT', 1);
+define('WP_REDIS_DATABASE', 0);
+
+define('WP_CACHE', true);
 
 /**#@-*/
 
