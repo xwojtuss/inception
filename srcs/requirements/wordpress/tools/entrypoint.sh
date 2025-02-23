@@ -17,8 +17,11 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 	unset AUTH_KEYS
 	sleep 5
 	wp-cli core install --allow-root --url=$DOMAIN_NAME --title=Inception --admin_user=$(sed -n '1p' $CREDENTIALS_FILE) --admin_password=$(sed -n '3p' $CREDENTIALS_FILE) --admin_email=$(sed -n '2p' $CREDENTIALS_FILE)
-	wp-cli plugin install --allow-root redis-cache --activate
+	chown -R nobody:nobody /var/www/html/wp-content
+	chmod -R 755 /var/www/html/wp-content
+	wp-cli plugin install --allow-root redis-cache
 	cp /var/www/html/wp-content/plugins/redis-cache/includes/object-cache.php /var/www/html/wp-content/
+	wp-cli plugin activate --allow-root redis-cache
 fi
 
 exec php-fpm82 -F
