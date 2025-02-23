@@ -13,6 +13,7 @@ services:
       - /home/wkornato/data/wordpress:/var/www/html
     networks:
       - server_web
+      - netdata_server
     restart: always
   
   mariadb:
@@ -31,8 +32,6 @@ services:
       - ca_cert
     volumes:
       - /home/wkornato/data/databases:/var/lib/mysql
-    ports:
-      - "3306:3306"
     networks:
       - db_web
     restart: always
@@ -56,8 +55,6 @@ services:
       - mariadb
     volumes:
       - /home/wkornato/data/wordpress:/var/www/html
-    ports:
-      - "9000:9000"
     networks:
       - server_web
       - db_web
@@ -69,8 +66,6 @@ services:
       context: ./requirements/redis
     secrets:
       - redis_pass
-    ports:
-      - "6379:6379"
     networks:
       - redis_web
     restart: always
@@ -90,6 +85,28 @@ services:
     volumes:
       - /home/wkornato/data/wordpress:/home/vsftpd
     restart: always
+  
+  netdata:
+    build:
+      context: ./requirements/netdata
+    pid: host
+    networks:
+      - netdata_server
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    volumes:
+      - /:/host/root:ro,rslave
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/dbus:/run/dbus:ro
+    restart: always
 
 networks:
   db_web:
@@ -97,6 +114,8 @@ networks:
   server_web:
     driver: bridge
   redis_web:
+    driver: bridge
+  netdata_server:
     driver: bridge
 
 secrets:
