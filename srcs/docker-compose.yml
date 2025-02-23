@@ -37,7 +37,7 @@ services:
       - db_web
     restart: always
 
-  php-fpm:
+  wordpress:
     build:
       context: ./requirements/wordpress
     env_file:
