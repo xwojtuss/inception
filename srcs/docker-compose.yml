@@ -82,6 +82,8 @@ services:
       - .env
     secrets:
       - ftp_credentials
+      - vsftpd_key
+      - vsftpd_cert
     ports:
       - "21:21"
       - "10000-10100:10000-10100"
@@ -130,3 +132,7 @@ secrets:
     file: ../secrets/redis_pass.txt
   ftp_credentials:
     file: ../secrets/ftp_credentials.txt
+  vsftpd_key:
+    file: ../secrets/vsftpd-selfsigned.key
+  vsftpd_cert:
+    file: ../secrets/vsftpd-selfsigned.crt

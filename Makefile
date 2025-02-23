@@ -140,6 +140,15 @@ generate-certs:
 		-CAcreateserial -out secrets/mariadb-client-cert.pem -days 365; \
 	fi
 
+	@if [ ! -f secrets/vsftpd-selfsigned.key ] || [ ! -f secrets/vsftpd-selfsigned.crt ]; then \
+		echo "Generating vsftpd self-signed certificate..."; \
+		openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+		-keyout secrets/vsftpd-selfsigned.key \
+		-out secrets/vsftpd-selfsigned.crt \
+		-subj "/CN=vsftpd/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" \
+		-addext "subjectAltName=DNS:vsftpd"; \
+	fi
+
 	rm -rf tmp
 	
 rm-volumes:
