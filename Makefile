@@ -12,6 +12,7 @@ re: fclean all
 free:
 	docker system prune --all --volumes
 	rm -f srcs/.env secrets/*
+	rm -rf /home/wkornato/data/wordpress /home/wkornato/data/databases
 
 create-secrets:
 	@if [ ! -f srcs/.env ]; then \
@@ -77,5 +78,7 @@ generate-certs:
 
 	rm -rf tmp
 	
+rm-volumes:
+	rm -rf /home/wkornato/data/wordpress /home/wkornato/data/databases
 
-.PHONY: all clean fclean re free create-secrets remove-secrets
+.PHONY: all clean fclean re free create-secrets generate-certs rm-volumes

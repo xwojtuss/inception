@@ -5,22 +5,13 @@ RUN ln -s /usr/bin/php82 /usr/bin/php
 
 WORKDIR /var/www/html
 
-COPY conf/wp-config.php /var/www/html/wp-config.php
+COPY conf/wp-config.php /wp-config.php
 COPY conf/php-fpm.conf /etc/php82/php-fpm.conf
 COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
 
 COPY tools/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 RUN echo "memory_limit=512M" > /etc/php82/conf.d/custom.ini
-
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp-cli
-RUN echo "variables_order = EGPCS" >> /etc/php82/php.ini
-
-RUN wp-cli core download
-
-# RUN chmod -R 755 /var/www/html
 
 EXPOSE 9000
 
