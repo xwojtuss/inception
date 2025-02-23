@@ -23,9 +23,11 @@ create-secrets:
 		echo "DB_USER_FILE=/run/secrets/db_user" >> srcs/.env; \
 		echo "DB_ADMIN_FILE=/run/secrets/db_admin" >> srcs/.env; \
 		echo "WORDPRESS_DB_HOST=db:3306" >> srcs/.env; \
+		echo "CREDENTIALS_FILE=/run/secrets/credentials" >> srcs/.env; \
 	fi
 
 	@if [ ! -f secrets/db_user.txt ]; then \
+		echo "---Wordpress database user---"; \
 		printf "Enter the user name: "; \
 		read DB_USER; \
 		printf $$DB_USER > secrets/db_user.txt; \
@@ -38,6 +40,7 @@ create-secrets:
 	fi
 
 	@if [ ! -f secrets/db_admin.txt ]; then \
+		echo "---Wordpress database admin---"; \
 		printf "Enter the admin name: "; \
 		read DB_ADMIN; \
 		printf $$DB_ADMIN > secrets/db_admin.txt; \
@@ -50,9 +53,23 @@ create-secrets:
 	fi
 
 	@if [ ! -f secrets/db_name.txt ]; then \
+		echo "---Wordpress database---"; \
 		printf "Enter the database name: "; \
 		read DB_NAME; \
 		printf $$DB_NAME > secrets/db_name.txt; \
+	fi
+
+	@if [ ! -f secrets/credentials.txt ]; then \
+		echo "---Wordpress page admin credentials---"; \
+		printf "Enter the username: "; \
+		read CREDENTIALS_USERNAME; \
+		echo $$CREDENTIALS_USERNAME > secrets/credentials.txt; \
+		printf "Enter the email: "; \
+		read CREDENTIALS_EMAIL; \
+		echo $$CREDENTIALS_EMAIL >> secrets/credentials.txt; \
+		printf "Enter the password: "; \
+		read CREDENTIALS_PASSWORD; \
+		echo $$CREDENTIALS_PASSWORD >> secrets/credentials.txt; \
 	fi
 
 generate-certs:

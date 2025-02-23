@@ -13,7 +13,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 	wp-cli core download --allow-root
 	cp /wp-config.php /var/www/html/
 	sleep 5
-	wp-cli core install --allow-root --url=wkornato.42.fr --title=Inception --admin_user=root --admin_password=rootpassword --admin_email=wojkor338@gmail.com
+	wp-cli core install --allow-root --url=$DOMAIN_NAME --title=Inception --admin_user=$(sed -n '1p' $CREDENTIALS_FILE) --admin_password=$(sed -n '3p' $CREDENTIALS_FILE) --admin_email=$(sed -n '2p' $CREDENTIALS_FILE)
 fi
 
 exec php-fpm82 -F

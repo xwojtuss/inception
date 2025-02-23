@@ -49,6 +49,7 @@ services:
       - mariadb_client_cert
       - mariadb_client_key
       - ca_cert
+      - credentials
     depends_on:
       - mariadb
     volumes:
@@ -91,3 +92,5 @@ secrets:
     file: ../secrets/mariadb-client-cert.pem
   mariadb_client_key:
     file: ../secrets/mariadb-client-key.pem
+  credentials:
+    file: ../secrets/credentials.txt
