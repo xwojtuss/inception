@@ -1,15 +1,12 @@
 services:
-  server:
+  nginx:
     build:
       context: ./requirements/nginx
     env_file:
       - .env
     secrets:
-      - db_password
-      - db_root_password
-      - db_name
-      - db_user
-      - db_admin
+      - nginx_key
+      - nginx_cert
     ports:
       - "443:443"
     volumes:
@@ -18,7 +15,7 @@ services:
       - server_web
     restart: always
   
-  db:
+  mariadb:
     build:
       context: ./requirements/mariadb
     env_file:
@@ -29,6 +26,9 @@ services:
       - db_name
       - db_user
       - db_admin
+      - mariadb_server_cert
+      - mariadb_server_key
+      - ca_cert
     volumes:
       - databases:/var/lib/mysql
     ports:
@@ -37,19 +37,20 @@ services:
       - db_web
     restart: always
 
-  web:
+  php-fpm:
     build:
       context: ./requirements/wordpress
     env_file:
       - .env
     secrets:
-      - db_password
       - db_root_password
       - db_name
-      - db_user
       - db_admin
+      - mariadb_client_cert
+      - mariadb_client_key
+      - ca_cert
     depends_on:
-      - db
+      - mariadb
     volumes:
       - wordpress:/var/www/html
     ports:
@@ -82,3 +83,17 @@ secrets:
     file: ../secrets/db_user.txt
   db_admin:
     file: ../secrets/db_admin.txt
+  nginx_key:
+    file: ../secrets/nginx-selfsigned.key
+  nginx_cert:
+    file: ../secrets/nginx-selfsigned.crt
+  ca_cert:
+    file: ../secrets/ca-cert.pem
+  mariadb_server_cert:
+    file: ../secrets/mariadb-server-cert.pem
+  mariadb_server_key:
+    file: ../secrets/mariadb-server-key.pem
+  mariadb_client_cert:
+    file: ../secrets/mariadb-client-cert.pem
+  mariadb_client_key:
+    file: ../secrets/mariadb-client-key.pem

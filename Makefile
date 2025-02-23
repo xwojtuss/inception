@@ -1,18 +1,4 @@
-all: create-secrets
-	mkdir -p srcs/requirements/mariadb/tools/ssl/certs srcs/requirements/mariadb/tools/ssl/private srcs/requirements/wordpress/tools/ssl/certs srcs/requirements/wordpress/tools/ssl/private
-	openssl genpkey -algorithm RSA -out srcs/requirements/mariadb/tools/ssl/certs/ca-key.pem
-	openssl req -new -x509 -key srcs/requirements/mariadb/tools/ssl/certs/ca-key.pem -out srcs/requirements/mariadb/tools/ssl/certs/ca-cert.pem -days 365 -subj "/CN=db/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" -addext "subjectAltName=DNS:db"
-	openssl genpkey -algorithm RSA -out srcs/requirements/mariadb/tools/ssl/private/mariadb-server-key.pem
-	openssl req -new -key srcs/requirements/mariadb/tools/ssl/private/mariadb-server-key.pem -out srcs/requirements/mariadb/tools/ssl/certs/mariadb-server-req.csr -subj "/CN=db/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" -addext "subjectAltName=DNS:db"
-	openssl x509 -req -in srcs/requirements/mariadb/tools/ssl/certs/mariadb-server-req.csr -CA srcs/requirements/mariadb/tools/ssl/certs/ca-cert.pem -CAkey srcs/requirements/mariadb/tools/ssl/certs/ca-key.pem -CAcreateserial -out srcs/requirements/mariadb/tools/ssl/certs/mariadb-server-cert.pem -days 365
-	openssl genpkey -algorithm RSA -out srcs/requirements/mariadb/tools/ssl/private/mariadb-client-key.pem
-	openssl req -new -key srcs/requirements/mariadb/tools/ssl/private/mariadb-client-key.pem -out srcs/requirements/mariadb/tools/ssl/certs/mariadb-client-req.csr -subj "/CN=db/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" -addext "subjectAltName=DNS:db"
-	openssl x509 -req -in srcs/requirements/mariadb/tools/ssl/certs/mariadb-client-req.csr -CA srcs/requirements/mariadb/tools/ssl/certs/ca-cert.pem -CAkey srcs/requirements/mariadb/tools/ssl/certs/ca-key.pem -CAcreateserial -out srcs/requirements/mariadb/tools/ssl/certs/mariadb-client-cert.pem -days 365
-	chmod -R 755 srcs/requirements/mariadb/tools/ssl
-	cp -rf srcs/requirements/mariadb/tools/ssl/certs/ca-cert.pem srcs/requirements/wordpress/tools/ssl/certs/
-	cp -rf srcs/requirements/mariadb/tools/ssl/certs/mariadb-client-cert.pem srcs/requirements/wordpress/tools/ssl/certs/
-	cp -rf srcs/requirements/mariadb/tools/ssl/private/mariadb-client-key.pem srcs/requirements/wordpress/tools/ssl/private/
-	chmod -R 755 srcs/requirements/wordpress/tools/ssl
+all: create-secrets generate-certs
 	docker-compose -f srcs/docker-compose.yml up -d
 
 clean:
@@ -68,6 +54,28 @@ create-secrets:
 		printf $$DB_NAME > secrets/db_name.txt; \
 	fi
 
+generate-certs:
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+	-keyout secrets/nginx-selfsigned.key \
+	-out secrets/nginx-selfsigned.crt \
+	-subj "/CN=nginx/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" \
+	-addext "subjectAltName=DNS:nginx"
+
+	mkdir -p tmp
+	openssl genpkey -algorithm RSA -out tmp/ca-key.pem
+	openssl req -new -x509 -key tmp/ca-key.pem -out secrets/ca-cert.pem -days 365 -subj "/CN=mariadb/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" -addext "subjectAltName=DNS:mariadb"
+	
+	openssl genpkey -algorithm RSA -out secrets/mariadb-server-key.pem
+
+	openssl req -new -key secrets/mariadb-server-key.pem -out tmp/mariadb-server-req.csr -subj "/CN=mariadb/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" -addext "subjectAltName=DNS:mariadb"
+	openssl x509 -req -in tmp/mariadb-server-req.csr -CA secrets/ca-cert.pem -CAkey tmp/ca-key.pem -CAcreateserial -out secrets/mariadb-server-cert.pem -days 365
+
+	openssl genpkey -algorithm RSA -out secrets/mariadb-client-key.pem
+
+	openssl req -new -key secrets/mariadb-client-key.pem -out tmp/mariadb-client-req.csr -subj "/CN=mariadb/C=PL/ST=Masovian Voivodeship/L=Warsaw/O=42/OU=Student" -addext "subjectAltName=DNS:mariadb"
+	openssl x509 -req -in tmp/mariadb-client-req.csr -CA secrets/ca-cert.pem -CAkey tmp/ca-key.pem -CAcreateserial -out secrets/mariadb-client-cert.pem -days 365
+
+	rm -rf tmp
 	
 
 .PHONY: all clean fclean re free create-secrets remove-secrets

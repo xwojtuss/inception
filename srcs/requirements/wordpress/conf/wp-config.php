@@ -30,7 +30,7 @@ define( 'DB_USER', file_get_contents('/run/secrets/db_admin') );
 define( 'DB_PASSWORD', file_get_contents('/run/secrets/db_root_password'));
 /** Database hostname */
 // define( 'DB_HOST', getenv('WORDPRESS_DB_HOST') );
-define('DB_HOST', 'db:3306');
+define('DB_HOST', 'mariadb:3306');
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8' );

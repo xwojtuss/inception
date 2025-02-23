@@ -9,12 +9,6 @@ COPY conf/wp-config.php /var/www/html/wp-config.php
 COPY conf/php-fpm.conf /etc/php82/php-fpm.conf
 COPY conf/www.conf /etc/php82/php-fpm.d/www.conf
 
-COPY tools/ssl/certs/ca-cert.pem /etc/ssl/certs/
-COPY tools/ssl/certs/mariadb-client-cert.pem /etc/ssl/certs/
-COPY tools/ssl/private/mariadb-client-key.pem /etc/ssl/private/
-
-RUN chmod 600 /etc/ssl/certs/mariadb-client-cert.pem /etc/ssl/private/mariadb-client-key.pem
-
 COPY tools/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 RUN echo "memory_limit=512M" > /etc/php82/conf.d/custom.ini

@@ -2,6 +2,13 @@
 
 set -e
 
+cp run/secrets/ca_cert /etc/ssl/certs/ca-cert.pem
+cp run/secrets/mariadb_server_cert /etc/ssl/certs/mariadb-server-cert.pem
+cp run/secrets/mariadb_server_key /etc/ssl/private/mariadb-server-key.pem
+
+chmod 600 /etc/ssl/private/mariadb-server-key.pem
+chown mysql:mysql /etc/ssl/private/mariadb-server-key.pem
+
 DB_ROOT_PASSWORD=$(cat ${DB_ROOT_PASSWORD_FILE})
 DB_NAME=$(cat ${DB_NAME_FILE})
 DB_USER=$(cat ${DB_USER_FILE})
