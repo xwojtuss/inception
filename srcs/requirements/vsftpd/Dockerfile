@@ -1,6 +1,6 @@
 FROM alpine:3.21.2
 
-RUN apk update && apk add vsftpd && \
+RUN apk update && apk add vsftpd shadow && \
     mkdir -p /var/run/vsftpd/empty && \
     mkdir -p /home/vsftpd && \
     mkdir -p /etc/ssl/certs /etc/ssl/private && \

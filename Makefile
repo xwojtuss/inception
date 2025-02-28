@@ -27,6 +27,7 @@ create-secrets:
 		echo "FTP_CREDENTIALS_FILE=/run/secrets/ftp_credentials" >> srcs/.env; \
 	fi
 
+	mkdir -p secrets
 	@if [ ! -f secrets/db_user.txt ]; then \
 		echo "---Wordpress database user---"; \
 		printf "Enter the user name: "; \
@@ -102,6 +103,7 @@ create-secrets:
 	fi
 	
 generate-certs:
+	mkdir -p secrets
 	@if [ ! -f secrets/nginx-selfsigned.key ] || [ ! -f secrets/nginx-selfsigned.crt ]; then \
 		echo "Generating Nginx self-signed certificate..."; \
 		openssl req -x509 -nodes -days 365 -newkey rsa:2048 \

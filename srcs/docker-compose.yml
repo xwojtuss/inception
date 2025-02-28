@@ -1,5 +1,6 @@
 services:
   nginx:
+    container_name: nginx
     build:
       context: ./requirements/nginx
     env_file:
@@ -14,9 +15,11 @@ services:
     networks:
       - server_web
       - netdata_server
+      - adminer_server
     restart: always
   
   mariadb:
+    container_name: mariadb
     build:
       context: ./requirements/mariadb
     env_file:
@@ -34,9 +37,11 @@ services:
       - /home/wkornato/data/databases:/var/lib/mysql
     networks:
       - db_web
+      - adminer_db
     restart: always
 
   wordpress:
+    container_name: wordpress
     build:
       context: ./requirements/wordpress
     env_file:
@@ -62,6 +67,10 @@ services:
     restart: always
 
   redis:
+    container_name: redis
+    depends_on:
+      - wordpress
+      - nginx
     build:
       context: ./requirements/redis
     secrets:
@@ -71,6 +80,9 @@ services:
     restart: always
 
   vsftpd:
+    container_name: vsftpd
+    depends_on:
+      - nginx
     build:
       context: ./requirements/vsftpd
     env_file:
@@ -87,6 +99,9 @@ services:
     restart: always
   
   netdata:
+    container_name: netdata
+    depends_on:
+      - nginx
     build:
       context: ./requirements/netdata
     pid: host
@@ -96,7 +111,6 @@ services:
       - SYS_PTRACE
       - SYS_ADMIN
     volumes:
-      - /:/host/root:ro,rslave
       - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
       - /etc/localtime:/etc/localtime:ro
@@ -108,6 +122,25 @@ services:
       - /run/dbus:/run/dbus:ro
     restart: always
 
+  adminer:
+    container_name: adminer
+    depends_on:
+      - nginx
+      - mariadb
+    build:
+      context: ./requirements/adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+      ADMINER_PLUGINS: ssl
+    secrets:
+      - mariadb_server_cert
+      - mariadb_server_key
+      - ca_cert
+    networks:
+      - adminer_server
+      - adminer_db
+    restart: always
+
 networks:
   db_web:
     driver: bridge
@@ -116,6 +149,10 @@ networks:
   redis_web:
     driver: bridge
   netdata_server:
+    driver: bridge
+  adminer_server:
+    driver: bridge
+  adminer_db:
     driver: bridge
 
 secrets:
