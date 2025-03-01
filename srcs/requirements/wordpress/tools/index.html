@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CV</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<script src="js/script.js"></script>
+<body>
+  <div class="float-container">
+    <div class="float-child content">
+      <h1>Wojciech Kornatowski</h1>
+      <p class="contact-info">wojciech.kornatowski.20@gmail.com</p>
+      <p class="contact-info"><a href="https://www.linkedin.com/in/wojciechkornatowski/">LinkedIn</a> | <a href="https://github.com/xwojtuss">GitHub</a></p>
+      <br><br>
+      <div class="button-container">
+        <button onclick="revealSection('block-education')" id="btn-education" class="button">Education</button>
+        <button onclick="revealSection('block-experience')" id="btn-experience" class="button">Experience</button>
+        <button onclick="revealSection('block-certificates')" id="btn-certificates" class="button">Certificates</button>
+      </div>
+      <br><br><br>
+      <div class="block-hidable active" id="block-education">
+        <h2>Education</h2>
+        <h4>42 Warsaw</h4>
+        <p class="timeframe">02.2024 - currently</p>
+        <p class="description">42 is an NGO of higher education, it is project-driven and based around peer-to-peer methodology. It focuses on practical, technical skills like programming in C and C++, but also emphasizes soft skills like explaining difficult concepts, code review, sharing knowledge and working in teams. Some of my projects included making my own: shell, ray-tracer (yes, a ray-tracer, not a ray-caster), fractal sets (Mandelbrot, Julia, Burningship), a 2D game as well as my own library to use throughout my projects. Most of them written in C with a very limited set of low-level functions.</p>
+        <h4>Warsaw University of Technology</h4>
+        <p class="company">Bachelor of Science - BS, Applied Computer Science</p>
+        <p class="timeframe">10.2024 - currently</p>
+      </div>
+      <div class="block-hidable" id="block-experience">
+        <h2>Experience</h2>
+        <h4>Junior Specialist in Sales Network Services</h4>
+        <p class="company">Play P4 Sp. z o. o., Wynalazek 1, 02-677 Warsaw, Poland</p>
+        <p class="timeframe">07.2023 - 05.2024</p>
+        <p class="description">This role required critical thinking, quick problem-solving, and strong teamwork skills. My responsibilities included assisting employees with system errors, streamlining processes for sales staff by improving existing procedures, testing changes before and after deployment to the production environment, and standardizing information related to current procedures and processes. I was part of an expert group responsible for resolving issues during the sale of fiber-optic internet services as well as expanding the coverage of our internet services, developing new processes with the partner companies and addressing errors related to coverage databases and supplier APIs.</p>
+      </div>
+      <div class="block-hidable" id="block-certificates">
+        <h2>Certificates</h2>
+        <h4>IELTS Academic 8.0</h4>
+        <p class="company">British Council</p>
+        <p class="timeframe">03.2023</p>
+        <h4>Technik informatyk (IT technician)</h4>
+        <p class="company">Okręgowa Komisja Egzaminacyjna w Warszawa</p>
+      </div>
+    </div>
+    <div class="float-child portrait-container">
+      <img class="portrait" src="portrait.png" />
+    </div>
+  </div>
+</body>
+</html>

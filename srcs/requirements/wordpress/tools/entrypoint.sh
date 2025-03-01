@@ -24,6 +24,7 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 	wp-cli plugin install --allow-root redis-cache
 	cp /var/www/html/wp-content/plugins/redis-cache/includes/object-cache.php /var/www/html/wp-content/
 	wp-cli plugin activate --allow-root redis-cache
+	chown -R nobody:nobody /var/www/html/wp-content
 fi
 
 exec php-fpm82 -F

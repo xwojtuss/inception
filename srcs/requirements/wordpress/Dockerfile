@@ -2,6 +2,11 @@ FROM	alpine:3.21.2
 
 RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php82-mbstring php82-curl curl php82-iconv php82-mysqli gettext php82-openssl php82-posix php82-sockets
 RUN ln -s /usr/bin/php82 /usr/bin/php
+RUN mkdir -p /var/www/html/wp-content/uploads/cv/js
+COPY tools/portrait.png /var/www/html/wp-content/uploads/cv/portrait.png
+COPY tools/index.html /var/www/html/wp-content/uploads/cv/index.html
+COPY tools/styles.css /var/www/html/wp-content/uploads/cv/styles.css
+COPY tools/script.js /var/www/html/wp-content/uploads/cv/js/script.js
 
 WORKDIR /var/www/html
 
