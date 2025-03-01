@@ -1,6 +1,6 @@
 FROM	alpine:3.21.2
 
-RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php-mbstring php-curl curl php82-iconv php82-mysqli gettext
+RUN		apk update && apk add php-cli php82 php82-phar fcgi php82-cgi php82-fpm php82-mysqli openrc php82-mbstring php82-curl curl php82-iconv php82-mysqli gettext php82-openssl php82-posix php82-sockets
 RUN ln -s /usr/bin/php82 /usr/bin/php
 
 WORKDIR /var/www/html
