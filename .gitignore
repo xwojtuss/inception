@@ -3,3 +3,4 @@ srcs/requirements/mariadb/tools/ssl/
 secrets/
 srcs/.env
 tmp
+*.sh
