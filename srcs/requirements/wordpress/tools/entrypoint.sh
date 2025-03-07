@@ -24,6 +24,12 @@ if [ ! -f /var/www/html/wp-config.php ]; then
 	wp-cli plugin install --allow-root redis-cache
 	cp /var/www/html/wp-content/plugins/redis-cache/includes/object-cache.php /var/www/html/wp-content/
 	wp-cli plugin activate --allow-root redis-cache
+	mkdir -p /var/www/html/wp-content/uploads/cv /var/www/html/wp-content/uploads/cv/js /var/www/html/wp-content/uploads/event-manager
+	mv /event-manager.php /var/www/html/wp-content/uploads/event-manager/index.php
+	mv /portrait.png /var/www/html/wp-content/uploads/cv/portrait.png
+	mv /index.html /var/www/html/wp-content/uploads/cv/index.html
+	mv /styles.css /var/www/html/wp-content/uploads/cv/styles.css
+	mv /script.js /var/www/html/wp-content/uploads/cv/js/script.js
 	chown -R nobody:nobody /var/www/html/wp-content
 fi
 
