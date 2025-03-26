@@ -1,0 +1,194 @@
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./requirements/nginx
+    env_file:
+      - .env
+    secrets:
+      - nginx_key
+      - nginx_cert
+    ports:
+      - "443:443"
+    volumes:
+      - /home/wkornato/data/wordpress:/var/www/html
+    networks:
+      - server_web
+      - netdata_server
+      - adminer_server
+    restart: always
+  
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb
+    env_file:
+      - .env
+    secrets:
+      - db_password
+      - db_root_password
+      - db_name
+      - db_user
+      - db_admin
+      - mariadb_server_cert
+      - mariadb_server_key
+      - ca_cert
+    volumes:
+      - /home/wkornato/data/databases:/var/lib/mysql
+    networks:
+      - db_web
+      - adminer_db
+    restart: always
+
+  wordpress:
+    container_name: wordpress
+    build:
+      context: ./requirements/wordpress
+    env_file:
+      - .env
+    secrets:
+      - db_root_password
+      - db_name
+      - db_admin
+      - mariadb_client_cert
+      - mariadb_client_key
+      - ca_cert
+      - credentials
+      - auth
+      - redis_pass
+    depends_on:
+      - mariadb
+    volumes:
+      - /home/wkornato/data/wordpress:/var/www/html
+    networks:
+      - server_web
+      - db_web
+      - redis_web
+    restart: always
+
+  redis:
+    container_name: redis
+    depends_on:
+      - wordpress
+      - nginx
+    build:
+      context: ./requirements/redis
+    secrets:
+      - redis_pass
+    networks:
+      - redis_web
+    restart: always
+
+  vsftpd:
+    container_name: vsftpd
+    depends_on:
+      - nginx
+    build:
+      context: ./requirements/vsftpd
+    env_file:
+      - .env
+    secrets:
+      - ftp_credentials
+      - vsftpd_key
+      - vsftpd_cert
+    ports:
+      - "21:21"
+      - "10000-10100:10000-10100"
+    volumes:
+      - /home/wkornato/data/wordpress:/home/vsftpd
+    restart: always
+  
+  netdata:
+    container_name: netdata
+    depends_on:
+      - nginx
+    build:
+      context: ./requirements/netdata
+    pid: host
+    networks:
+      - netdata_server
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    volumes:
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/dbus:/run/dbus:ro
+    restart: always
+
+  adminer:
+    container_name: adminer
+    depends_on:
+      - nginx
+      - mariadb
+    build:
+      context: ./requirements/adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+      ADMINER_PLUGINS: ssl
+    secrets:
+      - mariadb_server_cert
+      - mariadb_server_key
+      - ca_cert
+    networks:
+      - adminer_server
+      - adminer_db
+    restart: always
+
+networks:
+  db_web:
+    driver: bridge
+  server_web:
+    driver: bridge
+  redis_web:
+    driver: bridge
+  netdata_server:
+    driver: bridge
+  adminer_server:
+    driver: bridge
+  adminer_db:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_name:
+    file: ../secrets/db_name.txt
+  db_user:
+    file: ../secrets/db_user.txt
+  db_admin:
+    file: ../secrets/db_admin.txt
+  nginx_key:
+    file: ../secrets/nginx-selfsigned.key
+  nginx_cert:
+    file: ../secrets/nginx-selfsigned.crt
+  ca_cert:
+    file: ../secrets/ca-cert.pem
+  mariadb_server_cert:
+    file: ../secrets/mariadb-server-cert.pem
+  mariadb_server_key:
+    file: ../secrets/mariadb-server-key.pem
+  mariadb_client_cert:
+    file: ../secrets/mariadb-client-cert.pem
+  mariadb_client_key:
+    file: ../secrets/mariadb-client-key.pem
+  credentials:
+    file: ../secrets/credentials.txt
+  auth:
+    file: ../secrets/auth.txt
+  redis_pass:
+    file: ../secrets/redis_pass.txt
+  ftp_credentials:
+    file: ../secrets/ftp_credentials.txt
+  vsftpd_key:
+    file: ../secrets/vsftpd-selfsigned.key
+  vsftpd_cert:
+    file: ../secrets/vsftpd-selfsigned.crt
