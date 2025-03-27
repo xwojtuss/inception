@@ -11,7 +11,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - /home/wkornato/data/wordpress:/var/www/html
+      - wordpress:/var/www/html
     networks:
       - server_web
       - netdata_server
@@ -34,7 +34,7 @@ services:
       - mariadb_server_key
       - ca_cert
     volumes:
-      - /home/wkornato/data/databases:/var/lib/mysql
+      - databases:/var/lib/mysql
     networks:
       - db_web
       - adminer_db
@@ -59,7 +59,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - /home/wkornato/data/wordpress:/var/www/html
+      - wordpress:/var/www/html
     networks:
       - server_web
       - db_web
@@ -83,6 +83,7 @@ services:
     container_name: vsftpd
     depends_on:
       - nginx
+      - wordpress
     build:
       context: ./requirements/vsftpd
     env_file:
@@ -95,16 +96,13 @@ services:
       - "21:21"
       - "10000-10100:10000-10100"
     volumes:
-      - /home/wkornato/data/wordpress:/home/vsftpd
+      - wordpress:/home/vsftpd
     restart: always
   
   netdata:
     container_name: netdata
-    depends_on:
-      - nginx
     build:
       context: ./requirements/netdata
-    pid: host
     networks:
       - netdata_server
     cap_add:
@@ -192,3 +190,17 @@ secrets:
     file: ../secrets/vsftpd-selfsigned.key
   vsftpd_cert:
     file: ../secrets/vsftpd-selfsigned.crt
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/wkornato/data/wordpress
+  databases:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/wkornato/data/databases

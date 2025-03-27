@@ -1,4 +1,5 @@
 all: create-secrets generate-certs
+	mkdir -p /home/wkornato/data/wordpress /home/wkornato/data/databases
 	docker-compose -f srcs/docker-compose.yml up -d
 
 clean:
@@ -9,7 +10,7 @@ fclean:
 
 re: fclean all
 
-free: fclean
+free: fclean rm-volumes
 	docker system prune --all --volumes
 	rm -f srcs/.env secrets/*
 	rm -rf /home/wkornato/data/wordpress /home/wkornato/data/databases
@@ -26,7 +27,6 @@ create-secrets:
 		echo "CREDENTIALS_FILE=/run/secrets/credentials" >> srcs/.env; \
 		echo "FTP_CREDENTIALS_FILE=/run/secrets/ftp_credentials" >> srcs/.env; \
 	fi
-
 	mkdir -p secrets
 	@if [ ! -f secrets/db_user.txt ]; then \
 		echo "---Wordpress database user---"; \
@@ -34,13 +34,11 @@ create-secrets:
 		read DB_USER; \
 		printf $$DB_USER > secrets/db_user.txt; \
 	fi
-
 	@if [ ! -f secrets/db_password.txt ]; then \
 		printf "Enter user password: "; \
 		read DB_PASSWD; \
 		printf $$DB_PASSWD > secrets/db_password.txt; \
 	fi
-
 	@if [ ! -f secrets/db_admin.txt ]; then \
 		echo "---WordPress database admin---"; \
 		while true; do \
@@ -54,20 +52,17 @@ create-secrets:
 			fi; \
 		done; \
 	fi
-
 	@if [ ! -f secrets/db_root_password.txt ]; then \
 		printf "Enter the admin password: "; \
 		read DB_ROOT_PASSWD; \
 		printf $$DB_ROOT_PASSWD > secrets/db_root_password.txt; \
 	fi
-
 	@if [ ! -f secrets/db_name.txt ]; then \
 		echo "---Wordpress database---"; \
 		printf "Enter the database name: "; \
 		read DB_NAME; \
 		printf $$DB_NAME > secrets/db_name.txt; \
 	fi
-
 	@if [ ! -f secrets/credentials.txt ]; then \
 		echo "---Wordpress page admin credentials---"; \
 		printf "Enter the username: "; \
@@ -80,7 +75,6 @@ create-secrets:
 		read CREDENTIALS_PASSWORD; \
 		echo $$CREDENTIALS_PASSWORD >> secrets/credentials.txt; \
 	fi
-
 	@if [ ! -f secrets/ftp_credentials.txt ]; then \
 		echo "---FTP credentials---"; \
 		printf "Enter the username: "; \
@@ -90,16 +84,14 @@ create-secrets:
 		read FTP_CREDENTIALS_PASSWORD; \
 		echo $$FTP_CREDENTIALS_PASSWORD >> secrets/ftp_credentials.txt; \
 	fi
-
-	@if [ ! -f secrets/auth.txt ]; then \
-		curl https://api.wordpress.org/secret-key/1.1/salt/ > secrets/auth.txt; \
-	fi
-
 	@if [ ! -f secrets/redis_pass.txt ]; then \
 		echo "---Redis---"; \
 		printf "Enter the redis password: "; \
 		read REDIS_PASS; \
 		printf $$REDIS_PASS > secrets/redis_pass.txt; \
+	fi
+	@if [ ! -f secrets/auth.txt ]; then \
+		curl https://api.wordpress.org/secret-key/1.1/salt/ > secrets/auth.txt; \
 	fi
 	
 generate-certs:
@@ -154,6 +146,6 @@ generate-certs:
 	rm -rf tmp
 	
 rm-volumes:
-	rm -rf /home/wkornato/data/wordpress /home/wkornato/data/databases
+	docker volume prune
 
 .PHONY: all clean fclean re free create-secrets generate-certs rm-volumes
